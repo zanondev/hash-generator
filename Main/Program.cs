@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using System.Net;
 
 namespace UniqueKeyGenerator
 {
@@ -12,24 +13,30 @@ namespace UniqueKeyGenerator
             try
             {
                 Console.WriteLine("Digite seu nome: ");
-                string nome = Console.ReadLine();
-                if (string.IsNullOrEmpty(nome))
+                // Padrão de variavel camel case
+                string userName = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(userName))
                 {
                     Console.WriteLine("O nome não pode estar vazio.");
                     return;
                 }
 
                 Console.WriteLine("Digite seu sobrenome: ");
-                string sobrenome = Console.ReadLine();
-                if (string.IsNullOrEmpty(sobrenome))
+                string userNickname = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(userNickname))
                 {
                     Console.WriteLine("O sobrenome não pode estar vazio.");
                     return;
                 }
 
-                string chaveUnica = GerarChaveUnica(nome, sobrenome);
+                // Mecanismo para as labels de início e fim da rotina
+                Console.WriteLine("Iniciando geração de chave única");
+                string singleKey = GenerateSingleKey(userName, userNickname);
+                Console.WriteLine("Geração de chave única finalizada");
 
-                Console.WriteLine($"Sua chave única é: {chaveUnica}");
+                Console.WriteLine($"Sua chave única é: {singleKey}");
             }
             catch (Exception ex)
             {
@@ -37,14 +44,15 @@ namespace UniqueKeyGenerator
             }
         }
 
-        private static string GerarChaveUnica(string nome, string sobrenome)
+        private static string GenerateSingleKey(string userName, string userNickname)
         {
-            string conteudo = nome + sobrenome;
-            string chaveUnica = CreateHash(conteudo);
+            string content = userName + userNickname;
+            string singleKey = CreateHash(content);
 
-            return chaveUnica;
+            return singleKey;
         }
 
+        // Tamanho único para indentação 
         public static string CreateHash(string content)
         {
             using (var md5HashAlgorithm = SHA512.Create())
